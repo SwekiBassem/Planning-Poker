@@ -10,6 +10,8 @@ export interface Game {
   createdById: string;
   createdAt: Date;
   updatedAt?: Date;
+  userStory : any;
+
 }
 
 export interface NewGame {
@@ -17,6 +19,7 @@ export interface NewGame {
   gameType: string;
   createdBy: string;
   createdAt: Date;
+  userStory : any;
 }
 
 export enum GameType {

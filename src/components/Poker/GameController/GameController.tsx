@@ -14,6 +14,8 @@ import emailjs from '@emailjs/browser';
 import Timer from "../../../types/Timer";
 import Settings from "../../../types/Settings";
 import SettingsContext from "../../../types/SettingsContext";
+import ReactTable from "react-table";  
+
 interface GameControllerProps {
   game: Game;
   currentPlayerId: string;
@@ -33,6 +35,7 @@ export const GameController: React.FC<GameControllerProps> = ({ game, currentPla
     document.body.removeChild(dummy);
     setShowCopiedMessage(true);
   };
+
   const sendEmail = (e) => {
     e.preventDefault();
     emailjs.sendForm('service_8azag63', 'template_btiln8z', e.target, 'WPav7AG4GKA6zda8A')
@@ -54,8 +57,27 @@ export const GameController: React.FC<GameControllerProps> = ({ game, currentPla
   const [showSettings, setShowSettings] = useState(false);
   const [workMinutes, setWorkMinutes] = useState(10);
   const [breakMinutes, setBreakMinutes] = useState(15);
-
+  
   return (
+    <>
+    <table className='content-table'>
+    <thead>
+        <tr>
+          <th>Subject</th>
+          <th>Description</th>
+          <th>Status</th>
+          <th>Estimated hours</th>
+        </tr>
+        </thead>
+        <tbody>
+            <tr >
+              <td>{game.userStory.subject}</td>
+              <td>{game.userStory.description}</td>
+              <td>{game.userStory.status}</td>
+              <td>{game.userStory.estimated_hours}</td>
+            </tr>
+            </tbody>
+            </table>
     <Grow in={true} timeout={2000}>
       <div className='GameController'>
         <Card variant='outlined' className='GameControllerCard'>
@@ -109,24 +131,13 @@ export const GameController: React.FC<GameControllerProps> = ({ game, currentPla
             </div>
             <div title='Copy invite link' className='GameControllerButtonContainer'>
               <div className='GameControllerButton'>
-                <IconButton data-testid='invite-button' onClick={() => copyInviteLink()}>
+                <IconButton href="mailto:san@antonio.net" data-testid='invite-button' onClick={() => copyInviteLink()}>
                   <LinkIcon fontSize='large' style={{ color: blue[500] }} />
                 </IconButton>
               </div>
               <Typography variant='caption'>Invite</Typography>
             </div>
           </CardContent>
-          <CardContent className='GameControllerCard'>
-          {isModerator(game.createdById, currentPlayerId) && (
-          <form onSubmit={sendEmail}>
-      <label>Email</label>
-      <input type="email" name="user_email" className='CreateGameTextField'/>
-      <label>Message</label>
-      <input name="message" type="text" className='CreateGameTextField'/>
-      <input type="submit" value="Send" />
-    </form>
-     )}
-       </CardContent>
         </Card>
         <Snackbar
           anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
@@ -152,6 +163,6 @@ export const GameController: React.FC<GameControllerProps> = ({ game, currentPla
     </main>
       </div>
     </Grow>
-
+    </>
   );
 };

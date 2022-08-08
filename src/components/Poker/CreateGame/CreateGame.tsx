@@ -10,17 +10,22 @@ import {
   RadioGroup,
   TextField,
 } from '@material-ui/core';
-import React, { ChangeEvent, FormEvent, useState } from 'react';
+import React, { ChangeEvent, FormEvent, useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { addNewGame } from '../../../service/games';
 import { GameType, NewGame } from '../../../types/game';
 import './CreateGame.css';
+import Axios from 'axios';
+import Dropdown from './Dropdown';
+import Select from 'react-select'
+
 
 export const CreateGame = () => {
   const history = useHistory();
-  const [gameName, setGameName] = useState('Avengers');
-  const [createdBy, setCreatedBy] = useState('SuperHero');
+  const [gameName, setGameName] = useState('');
+  const [createdBy, setCreatedBy] = useState('');
   const [gameType, setGameType] = useState(GameType.Fibonacci);
+  const [userstory, setUserStory] = useState([]);
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
@@ -29,10 +34,48 @@ export const CreateGame = () => {
       createdBy: createdBy,
       gameType: gameType,
       createdAt: new Date(),
+      userStory:userstory
     };
     const newGameId = await addNewGame(game);
     history.push(`/game/${newGameId}`);
   };
+
+  const locations = [
+    {
+      label: 'Delete history',
+      value: 'Delete history',
+    },
+    {
+      label: 'testtt',
+      value: 'testtt',
+    },
+  ];
+
+  const [data, setData]= useState([])
+  useEffect(()=>{
+    Axios.get('http://localhost:8080/api/users')
+    .then(res =>{
+      console.log("Getting from:::",res.data[0].subject)
+      setData(res.data)
+    }).catch(err => console.log(err))
+  }, [])
+  let array= new Array;
+  data.forEach(element => {
+    let obje = {
+      label: element.subject,
+      value: element.subject,
+    }
+    array.push(obje)
+  });
+  const ddlHandler=e=>{
+    data.forEach(res=>{
+      if(res.subject==e.label){
+        console.log(res)
+        setUserStory(res)
+
+      }
+    })
+  }
 
   return (
     <Grow in={true} timeout={1000}>
@@ -92,6 +135,12 @@ export const CreateGame = () => {
               />
             </RadioGroup>
           </CardContent>
+          <Select
+           placeholder="Select User Story" 
+           options={array}
+           onChange={ddlHandler}
+           />
+
           <CardActions className='CreateGameCardAction'>
             <Button type='submit' variant='contained' color='primary' className='CreateGameButton'>
               Create
