@@ -40,17 +40,6 @@ export const CreateGame = () => {
     history.push(`/game/${newGameId}`);
   };
 
-  const locations = [
-    {
-      label: 'Delete history',
-      value: 'Delete history',
-    },
-    {
-      label: 'testtt',
-      value: 'testtt',
-    },
-  ];
-
   const [data, setData]= useState([])
   useEffect(()=>{
     Axios.get('http://localhost:8080/api/users')
